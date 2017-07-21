@@ -3,10 +3,11 @@
 	p.user-name.white Aman Agarwal
 .flash-card-container.u-flex-grow
 	p.heading-strip.cloud-white.light-grey-bg Flash Cards
-	.card-container
-		each flashCard in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-			.card(data-card="#{flashCard}" data-id="#{flashCard}") 
-				p Card number #{flashCard}
+	.card-container.hidden
+		//- each flashCard in [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+		//- 	.card(data-card="#{flashCard}" data-id="#{flashCard}") 
+		//- 		p Card number #{flashCard}
 	.step-jumper
 		span.cloud-white.cursor-p.step-jumper--previous	Previous
 		span.cloud-white.cursor-p.step-jumper--next	Next
+	.flashcard-note Note: You can click on flashcard to copy
