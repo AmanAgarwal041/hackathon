@@ -102,12 +102,12 @@
 			$.ajax({
 				method: "POST",
 				url: "/getVideoData",
-				data: getJSON({ videoid: 'cJTTs-nOqdQ' }),
+				data: JSON.stringify({ videoid: 'UGkLd1pxHQ0' }),
 				dataType: 'json',
 				contentType:'application/json'
 			})
 			.then(function (data) {
-				mockdata = data;
+				mockdata = data[0];
 				var qHtml = getQuestionHtml(questionCounter);
 				questionCounter++;
 				$('.question-container').append(qHtml);
