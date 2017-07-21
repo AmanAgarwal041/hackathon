@@ -54,10 +54,10 @@ body {
 }
 
 .blue{
-	color: #3498db;
+	color: #706392;
 }
 .blue-bg{
-	background-color: #3498db;
+	background-color: #706392;
 }
 .white{
 	color: #fff;
@@ -78,16 +78,16 @@ body {
 	background-color: #34495e;
 }
 .cloud-white{
-	color: #95a5a6;
+	color: #A9A7AF;
 }
 .cloud-white-bg{
-	background-color: #95a5a6;
+	background-color: #A9A7AF;
 }
 .red{
 	color: #e74c3c;
 }
 .green{
-	color: #45b97c;
+	color: #008000;
 }
 
 /* Left Component */
@@ -97,7 +97,7 @@ body {
 .user-img{
 	height: 150px;
 	background-position: center;
-	background-size: contain; 
+	background-size: contain;
 	background-repeat: no-repeat;
 }
 .user-name{
@@ -118,7 +118,7 @@ body {
 	position: relative;
 	width: 250px;
 	height: 220px;
-	margin: 10px auto 0; 
+	margin: 10px auto 0;
 	padding: 10px;
 	box-sizing: border-box;
 }
@@ -349,7 +349,7 @@ body {
 	position: absolute;
 	border: 1px solid #2c3e50;
 	border-radius: 50%;
-	background-color: #95a5a6;
+	background-color: #a9a7af;
 	z-index: 10;
 }
 .question-indicator.attempted:after{
@@ -360,7 +360,7 @@ body {
 	top: 5px;
 	position: absolute;
 	border-radius: 50%;
-	background-color: #27ae60;
+	background-color: #008000;
 	z-index: 9;
 }
 

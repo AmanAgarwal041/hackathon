@@ -1,79 +1,5 @@
 (function() {
-	var mockdata = {
-		videoid: 'cJTTs-nOqdQ',
-		videourl: 'https://www.youtube.com/watch?v=cJTTs-nOqdQ',
-		flashcards: [{
-			id: 1,
-			time: 0,
-			data: 'welcome to the tutorial of Linear Equation 1'
-		},
-		{
-			id: 2,
-			time: 5,
-			data: 'welcome to the tutorial of Linear Equation 2'
-		},
-		{
-			id: 3,
-			time: 10,
-			data: 'welcome to the tutorial of Linear Equation 3'
-		}],
-		question: [{
-			id: 1,
-			time: 0,
-			meta: {
-				questiontype: 'multiplechoice',
-				questiondata: 'question one data this is the first question',
-				options: [
-					'option1 data',
-					'option1 data',
-					'option1 data'
-				],
-				optionsmeta: [{
-					text: 'option1meta',
-					time: 11
-				},
-				{
-					text: 'option2meta',
-					time: 20
-				},
-				{
-					text: 'option2meta',
-					correct: true
-				}],
-				solution: 'text solution is here',
-			},
-		},
-		{
-			id: 2,
-			time: 10,
-			meta: {
-				questiontype: 'multiplechoice',
-				questiondata: 'question two data this is the second question',
-				options: [
-					'option1 data',
-					'option1 data',
-					'option1 data'
-				],
-				optionsmeta: [{
-					text: 'option1meta',
-					time: 11
-				},
-				{
-					text: 'option2meta',
-					time: 20
-				},
-				{
-					text: 'option2meta',
-					correct: true
-				}],
-				solution: 'text solution is here',
-			},
-		}],
-		videometa: {
-			title: 'title of first object',
-			body: '<p>html for the first object</p>'
-		}
-	};
+	// var mockdata = '{"videoid":"cJTTs-nOqdQ","videourl":"https:\/\/www.youtube.com/watch?v=cJTTs-nOqdQ","flashcards":[{"id":1,"time":0,"data":"welcome to the tutorial of Linear Equation 1"},{"id":2,"time":5,"data":"welcome to the tutorial of Linear Equation 2"},{"id":3,"time":10,"data":"welcome to the tutorial of Linear Equation 3"}],"question":[{"id":1,"time":0,"meta":{"questiontype":"multiplechoice","questiondata":"question one data this is the first question","options":["option1 data","option1 data","option1 data"],"optionsmeta":[{"text":"option1meta","time":11},{"text":"option2meta","time":20},{"text":"option2meta","correct":true}],"solution":"text solution is here"}},{"id":2,"time":10,"meta":{"questiontype":"multiplechoice","questiondata":"question two data this is the second question","options":["option1 data","option1 data","option1 data"],"optionsmeta":[{"text":"option1meta","time":11},{"text":"option2meta","time":20},{"text":"option2meta","correct":true}],"solution":"text solution is here"}}],"videometa":{"title":"title of first object","body":"<p>html for the first object</p>"}}';
 	var questionCounter = 0, flashcardCounter = 0;
 	var VideoManager = {
 		video: {},
@@ -84,11 +10,11 @@
 			VideoManager.video.seekTo(sec);
 		}
 	};
-	function getQuestionHtml(qIndex){
+	function getQuestionHtml(qIndex, open){
 		var html = '';
 		switch(mockdata.question[qIndex].meta.questiontype) {
 			case 'multiplechoice':
-				html += '<div class="question-container flex-box flex-column closed cursor-p"><div class="question-data" data-question-id="'+mockdata.question[qIndex].id+'"><div class="question-indicator"></div><h3 class="question-title overflow-ellipsis">Question '+(questionCounter + 1)+'</h3><p class="question-ques">'+mockdata.question[qIndex].meta.questiondata+'</p><div class="flex-box flex-column question-options">';
+				html += '<div class="question-container flex-box flex-column '+(open ? '': 'closed')+' cursor-p"><div class="question-data" data-question-id="'+mockdata.question[qIndex].id+'"><div class="question-indicator"></div><h3 class="question-title overflow-ellipsis">Question '+(questionCounter + 1)+'</h3><p class="question-ques">'+mockdata.question[qIndex].meta.questiondata+'</p><div class="flex-box flex-column question-options">';
 				for (var i = 0 ; i < mockdata.question[qIndex].meta.options.length ; i++) {
 					html += '<div class="flex-box flex-column question-option-container js-attempt-question" data-correct="'+(mockdata.question[qIndex].meta.optionsmeta[i].correct ? true : false)+'"><div class="question-option"><input type="checkbox" id="'+mockdata.question[qIndex].id+'-'+i+'" disabled="disabled"/><label for="'+mockdata.question[qIndex].id+'-'+i+'">'+mockdata.question[qIndex].meta.options[i]+'</label></div><div class="question-desc hidden">'+mockdata.question[qIndex].meta.optionsmeta[i].text+'<br/>';
 					if(!mockdata.question[qIndex].meta.optionsmeta[i].correct){
@@ -116,13 +42,13 @@
 			$.ajax({
 				method: "POST",
 				url: "/getVideoData",
-				data: JSON.stringify({ videoid: 'UGkLd1pxHQ0' }),
+				data: JSON.stringify({ videoid: 'cJTTs-nOqdQ' }),
 				dataType: 'json',
 				contentType:'application/json'
 			})
 			.then(function (data) {
 				mockdata = data[0];
-				var qHtml = getQuestionHtml(questionCounter);
+				var qHtml = getQuestionHtml(questionCounter, true);
 				questionCounter++;
 				$('.question-main-container').append(qHtml);
 				var fcHtml = getFlashCardHtml(flashcardCounter);
@@ -200,7 +126,8 @@
 		if(typeof VideoManager.video.getCurrentTime === 'undefined'){ return; }
 		var currentVideoTime = VideoManager.video.getCurrentTime();
 		if(currentVideoTime >= mockdata.question[questionCounter].time && $('.question-data[data-question-id="'+mockdata.question[questionCounter].id+'"]').length === 0) {
-			var qHtml = getQuestionHtml(questionCounter);
+			$('.question-container').addClass('closed');
+			var qHtml = getQuestionHtml(questionCounter, true);
 			questionCounter++;
 			$('.question-main-container').append(qHtml);
 			createToast({ message: 'Question Added!', autoHideTime: 1000 });
