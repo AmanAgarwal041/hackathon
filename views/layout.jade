@@ -9,15 +9,15 @@ html
 		meta(http-equiv="X-UA-Compatible" content="IE=edge,chrome=1")
 		meta(name="viewport" content="width=device-width, initial-scale=1")
 	body
-		.flex-box.flex-row
+		.flex-box.flex-row.full-height
 			.flex-box.flex-column.left-panel.grey-bg
 				include components/left-panel
 			.flex-box.flex-column.u-flex-grow.main-container
 				.flex-box.flex-row.header-panel.grey-bg
 					p.cloud-white.page-title Interactive Content
-				.flex-box.flex-row
+				.flex-box.flex-row.full-height
 					block content
-					.flex-box.flex-column.right-panel.cloud-white-bg
+					.flex-box.flex-column.right-panel.cloud-white-bg.full-height
 						include components/right-panel
 		script(src="http://code.jquery.com/jquery-1.12.0.min.js")
 		script(src="https://www.youtube.com/iframe_api" type="text/javascript")

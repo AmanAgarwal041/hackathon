@@ -85,13 +85,27 @@
 		}
 	};
 	function getQuestionHtml(qIndex){
+		var html = '';
 		switch(mockdata.question[qIndex].meta.questiontype) {
 			case 'multiplechoice':
-				return '<div class="question-data cursor-p closed" data-question-id="'+mockdata.question[qIndex].id+'"><div class="question-indicator attempted"></div><h3 class="question-title overflow-ellipsis">'+mockdata.question[qIndex].meta.questiondata+'</h3></div>';
+				html += '<div class="question-container flex-box flex-column closed cursor-p"><div class="question-data" data-question-id="'+mockdata.question[qIndex].id+'"><div class="question-indicator"></div><h3 class="question-title overflow-ellipsis">Question '+(questionCounter + 1)+'</h3><p class="question-ques">'+mockdata.question[qIndex].meta.questiondata+'</p><div class="flex-box flex-column question-options">';
+				for (var i = 0 ; i < mockdata.question[qIndex].meta.options.length ; i++) {
+					html += '<div class="flex-box flex-column question-option-container js-attempt-question" data-correct="'+(mockdata.question[qIndex].meta.optionsmeta[i].correct ? true : false)+'"><div class="question-option"><input type="checkbox" id="'+mockdata.question[qIndex].id+'-'+i+'" disabled="disabled"/><label for="'+mockdata.question[qIndex].id+'-'+i+'">'+mockdata.question[qIndex].meta.options[i]+'</label></div><div class="question-desc hidden">'+mockdata.question[qIndex].meta.optionsmeta[i].text+'<br/>';
+					if(!mockdata.question[qIndex].meta.optionsmeta[i].correct){
+						html += '<span class="red js-jump-video" data-video-time="'+mockdata.question[qIndex].meta.optionsmeta[i].time+'">Click here to revise</span>';
+					}
+					else{
+						html += '<span class="green">Correct Answer</span>';
+					}
+					html += '</div></div>'
+				}
+				html += '</div></div></div>';
 				break;
-			case 'text':
-				return '<div class="question-data cursor-p closed"><div class="question-indicator attempted"></div><h3 class="question-title overflow-ellipsis">'+mockdata.question[qIndex].meta.questiondata+'</h3></div>';
+			// case 'text':
+			// 	html += '<div class="question-data cursor-p closed"><div class="question-indicator attempted"></div><h3 class="question-title overflow-ellipsis">'+mockdata.question[qIndex].meta.questiondata+'</h3></div>';
+			// 	break;
 		}
+		return html;
 	}
 	function getFlashCardHtml(fcIndex){
 		return '<div class="card" data-card="'+mockdata.flashcards[fcIndex].id+'" data-id="'+mockdata.flashcards[fcIndex].id+'"><p>'+mockdata.flashcards[fcIndex].data+' </p></div>';
@@ -110,7 +124,7 @@
 				mockdata = data[0];
 				var qHtml = getQuestionHtml(questionCounter);
 				questionCounter++;
-				$('.question-container').append(qHtml);
+				$('.question-main-container').append(qHtml);
 				var fcHtml = getFlashCardHtml(flashcardCounter);
 				flashcardCounter++;
 				$('.card-container').append(fcHtml);
@@ -140,7 +154,9 @@
 	$(document).on('click', '.step-jumper--previous', previousCard);
 	$(document).on('click', '.step-jumper--next', nextCard);
 	$(document).on('click', '.card', copyFlashCard);
-	$(document).on('click', '.question-data.closed', openQuestion);
+	$(document).on('click', '.question-container.closed', openQuestion);
+	$(document).on('click', '.js-jump-video', jumpToVideoPoint);
+	$(document).on('click', '.js-attempt-question', attemptQuestion);
 
 	// Copy to Clipboard
 
@@ -167,11 +183,13 @@
 	function copyFlashCard(ev){
 		copyToClipboard($(this).text())
 			.then(() => {
-				createToast({ message: 'Copied to Clipboard!' });
+				createToast({ message: 'Copied to Clipboard!', autoHideTime: 1000 });
 			})
 	}
 
 	function openQuestion(ev) {
+		$('.question-container').addClass('closed');
+		$('.question-title').addClass('overflow-ellipsis');
 		$(this).removeClass('closed');
 		$(this).find('.question-title').removeClass('overflow-ellipsis');
 	}
@@ -184,8 +202,8 @@
 		if(currentVideoTime >= mockdata.question[questionCounter].time && $('.question-data[data-question-id="'+mockdata.question[questionCounter].id+'"]').length === 0) {
 			var qHtml = getQuestionHtml(questionCounter);
 			questionCounter++;
-			$('.question-container').append(qHtml);
-			createToast({ message: 'Question Added!' });
+			$('.question-main-container').append(qHtml);
+			createToast({ message: 'Question Added!', autoHideTime: 1000 });
 		}
 		if(questionCounter >= mockdata.question.length) {
 			clearInterval(questionAppendTimer);
@@ -200,10 +218,29 @@
 			var fcHtml = getFlashCardHtml(flashcardCounter);
 			$('.card[data-id="'+mockdata.flashcards[flashcardCounter - 1].id+'"]').after(fcHtml);
 			flashcardCounter++;
-			createToast({ message: 'Flash Card Added!' });
+			nextCard();
+			createToast({ message: 'Flash Card Added!', autoHideTime: 1000 });
 		}
 		if(flashcardCounter >= mockdata.flashcards.length) {
 			clearInterval(flashCardAppendTimer);
 		}
+	}
+
+	// jump to video seek time
+	function jumpToVideoPoint(ev){
+		var timeJump = $(this).attr('data-video-time');
+		VideoManager.seekTo(Number(timeJump));
+	}
+	// attempt question
+	function attemptQuestion(ev) {
+		$(this).removeClass('js-attempt-question');
+		$(this).closest('.question-container').find('.question-indicator').addClass('attempted');
+		if($(this).attr('data-correct') === "false") {
+			$(this).find('.question-option').addClass('wrong');
+		} else {
+			$(this).closest('.question-options').find('.js-attempt-question').removeClass('js-attempt-question');
+			$(this).find('.question-option').addClass('correct');
+		}
+		$(this).find('.question-desc').removeClass('hidden');
 	}
 }).call(this);
