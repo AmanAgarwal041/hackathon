@@ -89,6 +89,10 @@ body {
 .green{
 	color: #008000;
 }
+.video-data{
+	font-size: 24px;
+	color: #2A2AD0;
+}
 
 /* Left Component */
 .profile-img-container{

@@ -62,6 +62,14 @@
 						videoId: mockdata.videoid,
 					});
 				}, 1000);
+				var videoDataTimer = setInterval(function () {
+					if(typeof VideoManager.video.getVideoData === 'undefined') {
+						return;
+					}
+					var videoData = VideoManager.video.getVideoData();
+					$('.video-data').text(videoData.title);
+					clearInterval(videoDataTimer);
+				}, 1000);
 			})
 		})();
 	});
@@ -130,6 +138,9 @@
 			var qHtml = getQuestionHtml(questionCounter, true);
 			questionCounter++;
 			$('.question-main-container').append(qHtml);
+			setTimeout(function (){
+				VideoManager.video.pauseVideo();
+			}, 1000);
 			createToast({ message: 'Question Added!', autoHideTime: 1000 });
 		}
 		if(questionCounter >= mockdata.question.length) {
@@ -165,6 +176,7 @@
 		if($(this).attr('data-correct') === "false") {
 			$(this).find('.question-option').addClass('wrong');
 		} else {
+			VideoManager.video.playVideo();
 			$(this).closest('.question-options').find('.js-attempt-question').removeClass('js-attempt-question');
 			$(this).find('.question-option').addClass('correct');
 		}
